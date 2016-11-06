@@ -15,32 +15,56 @@ import {
 
 import Question from './components/Question';
 
-let question = "Is it alive?";
+let questionTree = {
+    question: "Is it Alive?",
+    yes: {
+        question: "Is it furry?",
+        yes: {
+            answer: "is it a cat?"
+        },
+        no: {
+            answer: "is it a turtle?"
+        }
+    },
+    no: {
+        question: "It it edible?",
+        yes: {
+            answer: "is it pizza?"
+        },
+        no: {
+            answer: "is it a rock?"
+        }
+    }
+};
 
 export default class Pangolins extends Component {
+
   render() {
     return (
         <Navigator
         style={{flex: 1}}
-        initialRoute={{ question: question, questionCount: 0 }}
+        initialRoute={{ question: questionTree, questionCount: 0 }}
         renderScene={(route, navigator) =>
           <Question
             question={ route.question }
             questionCount={ route.questionCount }
-            // Function to call when a new scene should be displayed
-            onForward={ () => {
+
+            onYes={ () => {
               const nextIndex = route.questionCount + 1;
+              const nextQuestion = route.question.yes;
                 navigator.push({
-                  question: 'You answered yes',
-                  questionCount: nextIndex,
+                  question: nextQuestion,
+                  questionCount: nextIndex
               });
             }}
 
-            // Function to call to go back to the previous scene
-            onBack={() => {
-              if (route.questionCount > 0) {
-                navigator.pop();
-              }
+            onNo={() => {
+              const nextIndex = route.questionCount + 1;
+              const nextQuestion = route.question.no;
+                navigator.push({
+                  question: nextQuestion,
+                  questionCount: nextIndex
+              });
             }}
           />
         }
