@@ -14,36 +14,71 @@ import {
 } from 'react-native';
 
 import Question from './components/Question';
+import Answer from './components/Answer';
 
-let question = "Is it alive?";
+var questionTree = {
+    question: "Is it Alive?",
+    yes: {
+        question: "Is it furry?",
+        yes: {
+            answer: "Is it a cat?"
+        },
+        no: {
+            answer: "Is it a turtle?"
+        }
+    },
+    no: {
+        question: "It it edible?",
+        yes: {
+            answer: "Is it a pizza?"
+        },
+        no: {
+            answer: "Is it a rock?"
+        }
+    }
+};
 
 export default class Pangolins extends Component {
+
+    renderScene(route, navigator) {
+
+        if(route.question.question){
+
+            return ( <Question
+            question={ route.question }
+            questionCount={ route.questionCount }
+
+            onYes={ () => {
+              const nextIndex = route.questionCount + 1;
+              const nextQuestion = route.question.yes;
+                navigator.push({
+                  question: nextQuestion,
+                  questionCount: nextIndex
+              });
+            }}
+
+            onNo={() => {
+              const nextIndex = route.questionCount + 1;
+              const nextQuestion = route.question.no;
+                navigator.push({
+                  question: nextQuestion,
+                  questionCount: nextIndex
+              });
+            }}
+          />);
+        } else{
+            return ( <Answer answer={route.question.answer} >
+                     </ Answer>);
+        }
+  }
+
+
   render() {
     return (
         <Navigator
         style={{flex: 1}}
-        initialRoute={{ question: question, questionCount: 0 }}
-        renderScene={(route, navigator) =>
-          <Question
-            question={ route.question }
-            questionCount={ route.questionCount }
-            // Function to call when a new scene should be displayed
-            onForward={ () => {
-              const nextIndex = route.questionCount + 1;
-                navigator.push({
-                  question: 'You answered yes',
-                  questionCount: nextIndex,
-              });
-            }}
-
-            // Function to call to go back to the previous scene
-            onBack={() => {
-              if (route.questionCount > 0) {
-                navigator.pop();
-              }
-            }}
-          />
-        }
+        initialRoute={{ question: questionTree, questionCount: 0 }}
+        renderScene={ this.renderScene }
       />
     );
   }

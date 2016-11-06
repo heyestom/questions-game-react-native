@@ -14,38 +14,37 @@ import {
 } from 'react-native';
 
 import Question from './components/Question';
+import Answer from './components/Answer';
 
-let questionTree = {
+var questionTree = {
     question: "Is it Alive?",
     yes: {
         question: "Is it furry?",
         yes: {
-            answer: "is it a cat?"
+            answer: "Is it a cat?"
         },
         no: {
-            answer: "is it a turtle?"
+            answer: "Is it a turtle?"
         }
     },
     no: {
         question: "It it edible?",
         yes: {
-            answer: "is it pizza?"
+            answer: "Is it a pizza?"
         },
         no: {
-            answer: "is it a rock?"
+            answer: "Is it a rock?"
         }
     }
 };
 
 export default class Pangolins extends Component {
 
-  render() {
-    return (
-        <Navigator
-        style={{flex: 1}}
-        initialRoute={{ question: questionTree, questionCount: 0 }}
-        renderScene={(route, navigator) =>
-          <Question
+    renderScene(route, navigator) {
+
+        if(route.question.question){
+
+            return ( <Question
             question={ route.question }
             questionCount={ route.questionCount }
 
@@ -66,8 +65,20 @@ export default class Pangolins extends Component {
                   questionCount: nextIndex
               });
             }}
-          />
+          />);
+        } else{
+            return ( <Answer answer={route.question.answer} >
+                     </ Answer>);
         }
+  }
+
+
+  render() {
+    return (
+        <Navigator
+        style={{flex: 1}}
+        initialRoute={{ question: questionTree, questionCount: 0 }}
+        renderScene={ this.renderScene }
       />
     );
   }
